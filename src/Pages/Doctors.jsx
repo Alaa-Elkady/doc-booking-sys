@@ -1,14 +1,92 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AppContext } from "../Context/AppContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 const Doctors = () => {
   const { doctors } = useContext(AppContext);
+  const { speciality } = useParams();
+  const [fliterDocs, setFliterDocs] = useState([]);
+  const navigate = useNavigate();
+  const filter = () => {
+    if (speciality) {
+      setFliterDocs(doctors.filter((doc) => doc.speciality === speciality));
+    } else {
+      setFliterDocs(doctors);
+    }
+  };
+  useEffect(() => {
+    filter();
+  }, [doctors, speciality]);
   return (
     <div>
-      <div className="w-full grid grid-cols-auto gap-4 gap-y-6 px-3 sm:px-0">
-        {doctors.map((doctor, index) => {
-         
+      <div className="my-3 text-gray-600 text-md">
+        Browse through the doctors specialist.
+      </div>
+      <div className="flex items-start sm:flex-row gap-5 ">
+        <ul className="flex flex-col ">
+          <li
+            onClick={() =>
+              speciality === "General physician"
+                ? navigate("/doctors")
+                : navigate(`/doctors/General physician`)
+            }
+            className="border rounded border-gray-300 py-2 px-3 w-56 cursor-pointer my-3 mr-3 text-gray-600 text-sm"
+          >
+            General physician
+          </li>
+          <li
+            onClick={() =>
+              speciality === "Gynecologist"
+                ? navigate("/doctors")
+                : navigate(`/doctors/Gynecologist`)
+            }
+            className="border rounded border-gray-300 py-2 px-3 w-56 cursor-pointer my-3 mr-3 text-gray-600 text-sm"
+          >
+            Gynecologist
+          </li>
+          <li
+            onClick={() =>
+              speciality === "Dermatologist"
+                ? navigate("/doctors")
+                : navigate(`/doctors/Dermatologist`)
+            }
+            className="border rounded border-gray-300 py-2 px-3 w-56 cursor-pointer my-3 mr-3 text-gray-600 text-sm"
+          >
+            Dermatologist
+          </li>
+          <li
+            onClick={() =>
+              speciality === "Pediatricians"
+                ? navigate("/doctors")
+                : navigate(`/doctors/Pediatricians`)
+            }
+            className="border rounded border-gray-300 py-2 px-3 w-56 cursor-pointer my-3 mr-3 text-gray-600 text-sm"
+          >
+            Pediatricians
+          </li>
+          <li
+            onClick={() =>
+              speciality === "Neurologist"
+                ? navigate("/doctors")
+                : navigate(`/doctors/Neurologist`)
+            }
+            className="border rounded border-gray-300 py-2 px-3 w-56 cursor-pointer my-3 mr-3 text-gray-600 text-sm"
+          >
+            Neurologist
+          </li>
+          <li
+            onClick={() =>
+              speciality === "Gastroenterologist"
+                ? navigate("/doctors")
+                : navigate(`/doctors/Gastroenterologist`)
+            }
+            className="border rounded-md border-gray-200 py-2 px-3 w-56 cursor-pointer my-3 mr-3 text-gray-600 text-sm"
+          >
+            Gastroenterologist
+          </li>
+        </ul>
+        <div className="w-full grid grid-cols-auto gap-4 gap-y-6 px-3 m-3">
+          {fliterDocs.map((doctor, index) => {
             return (
               <Link
                 to={`/appointments/${doctor._id}`}
@@ -28,8 +106,8 @@ const Doctors = () => {
                 </div>
               </Link>
             );
-          
-        })}
+          })}
+        </div>
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import {React,useContext} from "react";
+import { React, useContext } from "react";
 import { Link } from "react-router-dom";
 import { AppContext } from "../Context/AppContext";
 const TopDoctors = () => {
@@ -37,8 +37,11 @@ const TopDoctors = () => {
           }
         })}
       </div>
-      <Link to="/doctors" onClick={()=>{window.scrollTo(0,0)}} className="rounded-full  px-4  bg-blue-50 text-gray-400 py-2 w-max text-center">
-        more
+      <Link
+        to="/doctors"
+        className="rounded-full  px-4 hover:animate-pulse transition-all duration-100 bg-blue-50 text-black py-2  text-center"
+      >
+        More
       </Link>
     </div>
   );

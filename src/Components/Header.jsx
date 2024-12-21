@@ -20,7 +20,7 @@ const Header = () => {
         </div>
         <Link
           to='/login'
-          className="bg-white py-2 px-4 rounded-full flex items-center w-max hover:animate-pulse "
+          className="bg-white py-2 px-4 rounded-full flex items-center w-max hover:translate-x-5 transition-all duration-100 "
         >
           Book appointment <img src={assets.arrow_icon}
           className="pl-2" />
