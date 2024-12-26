@@ -1,27 +1,87 @@
 import React, { useEffect, useState } from "react";
 import { useContext } from "react";
 import { AppContext } from "../Context/AppContext";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { assets } from "../assets/assets";
 
 const Appointments = () => {
   const { docId } = useParams();
+  const navigate = useNavigate();
   const { doctors } = useContext(AppContext);
   const [docInfo, setDocInfo] = useState(null);
+  const [docSlot, setDocSlot] = useState([]);
+  const [slotIndex, setSlotIndex] = useState(0);
+  const [slotTime, setSlotTime] = useState("");
+  const daysOfTheweek = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+  const [sameSpeciality, setSameSpecialty] = useState([]);
+
   const fetchDocInfo = async () => {
     const docInfo = doctors.find((doc) => doc._id === docId);
     setDocInfo(docInfo);
-    console.log(docInfo);
+  };
+  const getAvailableSlot = async () => {
+    setDocSlot([]);
+    const today = new Date();
+    for (let i = 0; i < 7; i++) {
+      // getting date with index
+      let currentDate = new Date(today);
+      currentDate.setDate(today.getDate() + i);
+      // setting the end time of the date of index
+      let endTime = new Date(today);
+      endTime.setDate(today.getDate() + i);
+      endTime.setHours(21, 0, 0, 0);
+      // setting hours
+      if (today.getDate() === currentDate.getDate()) {
+        currentDate.setHours(
+          currentDate.getHours() > 10 ? currentDate.getHours() + 1 : 10
+        );
+        currentDate.setMinutes(currentDate.getMinutes() > 30 ? 30 : 0);
+      } else {
+        currentDate.setHours(10);
+        currentDate.getMinutes(0);
+      }
+      let timeSlots = [];
+      while (currentDate < endTime) {
+        const formattedTime = currentDate.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        timeSlots.push({
+          dateTime: new Date(currentDate),
+          time: formattedTime,
+        });
+        currentDate.setMinutes(currentDate.getMinutes() + 30);
+      }
+      setDocSlot((prev) => [...prev, timeSlots]);
+    }
+  };
+  const fliteredSpec = () => {
+    let same = doctors.filter(
+      (doc) => doc.speciality === docInfo.speciality && doc._id !== docId
+    );
+    setSameSpecialty(same);
   };
   useEffect(() => {
     fetchDocInfo();
   }, [doctors, docId]);
+  useEffect(() => {
+    if (doctors && docInfo) {
+      fliteredSpec();
+    }
+  }, [doctors, docInfo]);
+  useEffect(() => {
+    getAvailableSlot();
+  }, [docInfo]);
+
   return (
     docInfo && (
       <div>
         {/* top */}
         <div className="flex flex-col md:flex-row gap-4 py-10 w-full  text-gray-500">
-          <img src={docInfo.image} className="bg-blue-600 w-full sm:max-w-72 rounded-lg" />
+          <img
+            src={docInfo.image}
+            className="bg-blue-600 w-full sm:max-w-72 rounded-lg"
+          />
 
           <div className=" border border-gray-500 p-10 rounded-lg w-full">
             <p className="text-3xl font-semibold text-gray-900 mb-1 flex ">
@@ -40,15 +100,91 @@ const Appointments = () => {
               </p>
               <p className="text-sm  my-2">{docInfo.about}</p>
             </div>
-            <div className='my-3 font-semibold  text-gray-700'>
+            <div className="my-3 font-semibold  text-gray-700">
               Appointment fee : <span> ${docInfo.fees}</span>
             </div>
           </div>
         </div>
         {/* slots */}
-        <div></div>
-        {/* bottom */}
-        <div></div>
+        <div className="sm:ml-72 sm:pl-4 mt-4 font-medium text-gray-700">
+          <p> Booking Slots</p>
+
+          <div className="flex gap-3 w-full mt-4 overflow-x-scroll">
+            {docSlot.length &&
+              docSlot.map((item, index) => {
+                return (
+                  <div
+                    key={index}
+                    className={`text-lg text-center rounded-full p-2 min-w-16 py-6 cursor-pointer ${
+                      slotIndex === index
+                        ? "bg-blue-500 text-white"
+                        : " border border-gray-300"
+                    }`}
+                    onClick={() => setSlotIndex(index)}
+                  >
+                    <p>{item[0] && daysOfTheweek[item[0].dateTime.getDay()]}</p>
+                    <p>{item[0] && item[0].dateTime.getDate()}</p>
+                  </div>
+                );
+              })}
+          </div>
+
+          <div className="flex gap-3 w-full mt-4 overflow-x-scroll items-center">
+            {docSlot.length &&
+              docSlot[slotIndex].map((item, index) => {
+                return (
+                  <p
+                    className={`text-sm font-light flex-shrink-0 cursor-pointer ${
+                      item.time === slotTime
+                        ? "bg-blue-500 text-white"
+                        : "text-gray-700 border border-gray-300"
+                    } px-5 py-2 rounded-full`}
+                    key={index}
+                    onClick={() => setSlotTime(item.time)}
+                  >
+                    {item.time.toLowerCase()}
+                  </p>
+                );
+              })}
+          </div>
+          <button className="bg-blue-600 text-white py-3 px-14 my-5 rounded-full flex items-center text-center font-light text-sm ">
+            Book an appointment{" "}
+          </button>
+        </div>
+
+        <div className="flex flex-col items-center justify-center text-gray-800 py-16 gap-4">
+          <div className="text-3xl font-medium ">Related Doctors</div>
+          <p className="text-center text-sm leading-tight sm:w-2/6">
+            Simply browse through our extensive list of trusted doctors.
+          </p>
+          <div className="w-full flex justify-start gap-4 gap-y-6 px-3 sm:px-0">
+            {sameSpeciality.length > 0 &&
+              sameSpeciality.slice(0, 5).map((doctor, index) => (
+                <div
+                  onClick={() => {
+                    navigate(`/appointments/${doctor._id}`);
+                    window.scrollTo(0, 0);
+                  }}
+                  key={index}
+                  className="w-60 border border-blue-200 rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-500"
+                >
+                  <img src={doctor.image} className="w-full bg-blue-50" />
+                  <div className="p-4">
+                    <div className="flex items-center gap-2 text-sm  text-center text-green-500">
+                      <p className="w-2 rounded-full bg-green-500 h-2"> </p>
+                      <p>Available</p>
+                    </div>
+                    <p className="text-lg text-gray-900 font-medium">
+                      {doctor.name}
+                    </p>
+                    <p className="text-gray-600 text-sm ">
+                      {doctor.speciality}
+                    </p>
+                  </div>
+                </div>
+              ))}
+          </div>
+        </div>
       </div>
     )
   );

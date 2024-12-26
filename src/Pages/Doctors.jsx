@@ -22,7 +22,7 @@ const Doctors = () => {
       <div className="my-3 text-gray-600 text-md">
         Browse through the doctors specialist.
       </div>
-      <div className="flex items-start sm:flex-row gap-5 ">
+      <div className="flex items-start sm:flex-row gap-3 ">
         <ul className="flex flex-col ">
           <li
             onClick={() =>
@@ -30,7 +30,7 @@ const Doctors = () => {
                 ? navigate("/doctors")
                 : navigate(`/doctors/General physician`)
             }
-            className="border rounded border-gray-300 py-2 px-3 w-56 cursor-pointer my-3 mr-3 text-gray-600 text-sm"
+            className="border rounded border-gray-300 py-2 px-3 w-48 cursor-pointer my-2 mr-3 text-gray-600 text-sm"
           >
             General physician
           </li>
@@ -40,7 +40,7 @@ const Doctors = () => {
                 ? navigate("/doctors")
                 : navigate(`/doctors/Gynecologist`)
             }
-            className="border rounded border-gray-300 py-2 px-3 w-56 cursor-pointer my-3 mr-3 text-gray-600 text-sm"
+            className="border rounded border-gray-300 py-2 px-3 w-48 cursor-pointer my-2 mr-3 text-gray-600 text-sm"
           >
             Gynecologist
           </li>
@@ -50,7 +50,7 @@ const Doctors = () => {
                 ? navigate("/doctors")
                 : navigate(`/doctors/Dermatologist`)
             }
-            className="border rounded border-gray-300 py-2 px-3 w-56 cursor-pointer my-3 mr-3 text-gray-600 text-sm"
+            className="border rounded border-gray-300 py-2 px-3 w-48 cursor-pointer my-2 mr-3 text-gray-600 text-sm"
           >
             Dermatologist
           </li>
@@ -60,7 +60,7 @@ const Doctors = () => {
                 ? navigate("/doctors")
                 : navigate(`/doctors/Pediatricians`)
             }
-            className="border rounded border-gray-300 py-2 px-3 w-56 cursor-pointer my-3 mr-3 text-gray-600 text-sm"
+            className="border rounded border-gray-300 py-2 px-3 w-48 cursor-pointer my-2 mr-3 text-gray-600 text-sm"
           >
             Pediatricians
           </li>
@@ -70,7 +70,7 @@ const Doctors = () => {
                 ? navigate("/doctors")
                 : navigate(`/doctors/Neurologist`)
             }
-            className="border rounded border-gray-300 py-2 px-3 w-56 cursor-pointer my-3 mr-3 text-gray-600 text-sm"
+            className="border rounded border-gray-300 py-2 px-3 w-48 cursor-pointer my-2 mr-3 text-gray-600 text-sm"
           >
             Neurologist
           </li>
@@ -80,18 +80,18 @@ const Doctors = () => {
                 ? navigate("/doctors")
                 : navigate(`/doctors/Gastroenterologist`)
             }
-            className="border rounded-md border-gray-200 py-2 px-3 w-56 cursor-pointer my-3 mr-3 text-gray-600 text-sm"
+            className="border rounded-md border-gray-200 py-2 px-3 w-48 cursor-pointer my-2 mr-3 text-gray-600 text-sm"
           >
             Gastroenterologist
           </li>
         </ul>
-        <div className="w-full grid grid-cols-auto gap-4 gap-y-6 px-3 m-3">
+        <div className="w-full flex items-start flex-wrap gap-3 gap-y-4 px-3 my-3">
           {fliterDocs.map((doctor, index) => {
             return (
               <Link
                 to={`/appointments/${doctor._id}`}
                 key={index}
-                className=" border border-blue-200 rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-500"
+                className="w-56 border border-blue-200 rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-500"
               >
                 <img src={doctor.image} className="w-full bg-blue-50" />
                 <div className="p-4">
