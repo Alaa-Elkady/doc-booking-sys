@@ -17,7 +17,7 @@ const MyProfile = () => {
   });
   const [isEdit, setIsEdit] = useState(false);
   return (
-    <div className="flex flex-col items-start w-1/3">
+    <div className="flex flex-col items-start md:w-1/3">
       <img
         className="w-40 h-40 rounded-lg mt-12 mb-6"
         src={userData.image}

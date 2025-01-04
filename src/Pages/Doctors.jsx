@@ -22,8 +22,9 @@ const Doctors = () => {
       <div className="my-3 text-gray-600 text-md">
         Browse through the doctors specialist.
       </div>
-      <div className="flex items-start sm:flex-row gap-3 ">
-        <ul className="flex flex-col ">
+      <div className="flex md:items-start  md:flex-row flex-col gap-3 ">
+        <h1 className="md:hidden text-sm  capitalize font-semibold">filter by speciality</h1>
+        <ul className="flex md:flex-col flex-wrap flex-row justify-center">
           <li
             onClick={() =>
               speciality === "General physician"
@@ -85,13 +86,13 @@ const Doctors = () => {
             Gastroenterologist
           </li>
         </ul>
-        <div className="w-full flex items-start flex-wrap gap-3 gap-y-4 px-3 my-3">
+        <div className="w-full flex md:items-start justify-center flex-wrap gap-3 gap-y-4 px-3 my-3">
           {fliterDocs.map((doctor, index) => {
             return (
               <Link
                 to={`/appointments/${doctor._id}`}
                 key={index}
-                className="w-56 border border-blue-200 rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-500"
+                className="md:w-56 w-44  border border-blue-200 rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-500"
               >
                 <img src={doctor.image} className="w-full bg-blue-50" />
                 <div className="p-4">
