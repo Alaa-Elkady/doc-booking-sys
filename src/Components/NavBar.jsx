@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { assets } from "../assets/assets";
 import { NavLink, useNavigate } from "react-router-dom";
 
-const NavBar = () => {
+const NavBar = ({ isUser }) => {
   const nav = useNavigate();
   const [showMenu, setShowMenu] = useState(false);
   const [token, setToken] = useState(true);
@@ -28,7 +28,7 @@ const NavBar = () => {
         </NavLink>
       </ul>
       <div className="flex items-center gap-4 ">
-        {token ? (
+        {isUser === true && (
           <div className="flex items-center gap-2 cursor-pointer group relative">
             <img src={assets.profile_pic} className="w-8 rounded-full" />
             <img src={assets.dropdown_icon} className="w-2.5" />
@@ -55,7 +55,8 @@ const NavBar = () => {
               </div>
             </div>
           </div>
-        ) : (
+        )}
+        {isUser === false && (
           <button
             className="bg-blue-600 text-white px-8 py-3 rounded-full font-light hidden md:block"
             onClick={() => nav("/login")}
@@ -74,9 +75,9 @@ const NavBar = () => {
           }`}
         >
           <div className="flex items-start justify-between w-full px-10 mt-10">
-            <img src={assets.logo} alt="" className="w-44"/>
+            <img src={assets.logo} alt="" className="w-44" />
             <img
-            className="w-6 cursor-pointer"
+              className="w-6 cursor-pointer"
               src={assets.cross_icon}
               onClick={() => setShowMenu(false)}
               alt=""

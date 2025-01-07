@@ -4,9 +4,9 @@ export const AppContext = createContext();
 
 const AppContextProvider = ({ children }) => {
   const value = {
-    doctors
+    doctors,
   };
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
 
-export default AppContextProvider
+export default AppContextProvider;

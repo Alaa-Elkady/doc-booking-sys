@@ -1,26 +1,51 @@
 import React from "react";
-import { assets } from "./../assets/assets";
-import { useState } from "react";
-
+import { useState, useContext } from "react";
+import { UserContext } from "./../Context/UserContext";
+import { useParams } from "react-router-dom";
+import { assets } from "../assets/assets";
 const MyProfile = () => {
+  const { userInfo } = useContext(UserContext);
   const [userData, setUserData] = useState({
-    name: "Alaa Elkady",
-    image: assets.profile_pic,
-    email: "alaaselkady@outlook.com",
-    phone: "+20 127 7385 872",
+    name: userInfo.name,
+    // image: assets.profile_pic,
+    email: userInfo.email,
+    phone: userInfo.phone || "00000000",
     address: {
-      line1: "37th Cross, Richmond",
-      line2: "Circle, Ring Road, London",
+      line1: userInfo.address?.line1 || "Not available",
+      line2: userInfo.address?.line2 || "Not available",
     },
-    gender: "male",
-    dob: "30/9/2002",
+    gender: userInfo.gender || "Not selected",
+    dob: userInfo.dob || "not selected",
   });
+  const { id } = useParams();
+  const handleEdit = async () => {
+    if (isEdit) {
+      try {
+        const response = await fetch(`http://localhost:3001/Users/${id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(userData),
+        });
+        if (response.ok) {
+          const updatedUser = await response.json();
+          setUserData(updatedUser); // Update context
+          alert("Profile updated successfully!");
+        } else {
+          alert("Failed to update profile. Please try again.");
+        }
+      } catch (error) {
+        console.error("Error updating profile:", error);
+      }
+    }
+    setIsEdit(!isEdit);
+  };
+
   const [isEdit, setIsEdit] = useState(false);
   return (
     <div className="flex flex-col items-start md:w-1/3">
       <img
         className="w-40 h-40 rounded-lg mt-12 mb-6"
-        src={userData.image}
+        src={assets.profile_pic}
         alt=""
       />
       {isEdit ? (
@@ -93,7 +118,7 @@ const MyProfile = () => {
             />
           </div>
         ) : (
-          <div className="w-1/2">
+          <div className="w-1/2 text-sm">
             {userData.address.line1}
             <br />
             {userData.address.line2}
@@ -138,7 +163,7 @@ const MyProfile = () => {
       </div>
       <button
         className="px-8 py-2 text-sm font-medium border rounded-full border-blue-600 hover:bg-blue-600 hover:text-white text-black transition-all duration-500 mt-10"
-        onClick={() => setIsEdit(!isEdit)}
+        onClick={handleEdit}
       >
         {isEdit ? "Save information" : "Edit"}
       </button>

@@ -111,7 +111,7 @@ const Appointments = () => {
 
           <div className="flex gap-3 w-full mt-4 overflow-x-scroll">
             {docSlot.length &&
-              docSlot.map((item, index) => {
+              docSlot.slice(1,7).map((item, index) => {
                 return (
                   <div
                     key={index}

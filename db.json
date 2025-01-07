@@ -1,0 +1,47 @@
+{
+  "Users": [
+    {
+      "id": "be5f",
+      "email": "nnn",
+      "name": "alaa",
+      "password": "5555"
+    },
+    {
+      "name": "alaaelkady",
+      "email": "alaaselkady@outlook.com",
+      "phone": "+20 127 7385 872",
+      "address": {
+        "line1": "37th Cross, Richmond",
+        "line2": "Circle, Ring Road, London"
+      },
+      "gender": "female",
+      "dob": "2025-01-31",
+      "id": "a45e"
+    },
+    {
+      "name": "hellooooh",
+      "email": "jjjjjjjjjjjj@jjj.bjii",
+      "phone": "00000000",
+      "address": {
+        "line1": "Not available",
+        "line2": "Not available"
+      },
+      "gender": "female",
+      "dob": "2022-02-02",
+      "id": "c961"
+    },
+    {
+      "id": "0a0f",
+      "email": "hhhh@hn.mm",
+      "name": "j.kkkkkkkk",
+      "password": "55555555555555",
+      "phone": "00000000",
+      "address": {
+        "line1": "Not available",
+        "line2": "Not available"
+      },
+      "gender": "female",
+      "dob": "2025-01-31"
+    }
+  ]
+}
