@@ -15,7 +15,7 @@ function App() {
   const [isUser, setIsUser] = useState(false);
   return (
     <div className="mx-4 sm:mx-[10%]">
-      <NavBar isUser={isUser} />
+      <NavBar isUser={isUser} setIsUser={setIsUser} />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
