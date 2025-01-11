@@ -30,7 +30,7 @@ const Login = ({  setIsUser }) => {
     event.preventDefault();
     setLoading(true);
 
-    if (email === "" || name === "" || password === "") {
+    if (email === "" || password === "") {
       setIsOpen(true);
       setMessage("Please fill in all fields");
     } else {

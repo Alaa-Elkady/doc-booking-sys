@@ -31,23 +31,60 @@
       "id": "c961"
     },
     {
-      "id": "0a0f",
-      "email": "hhhh@hn.mm",
-      "name": "j.kkkkkkkk",
-      "password": "55555555555555",
-      "phone": "00000000",
-      "address": {
-        "line1": "Not available",
-        "line2": "Not available"
-      },
-      "gender": "female",
-      "dob": "2025-01-31"
+      "appointments": [
+        {
+          "docId": "doc13",
+          "date": "Fri Jan 17 2025",
+          "time": "11:16 am",
+          "name": "Dr. Chloe Evans",
+          "image": "/static/media/doc13.6bc6e4c24a6be7da9882.png",
+          "speciality": "General physician",
+          "fees": 50,
+          "address": {
+            "line1": "17th Cross, Richmond",
+            "line2": "Circle, Ring Road, London"
+          }
+        },
+        {
+          "docId": "doc2",
+          "date": "Tue Jan 14 2025",
+          "time": "11:48 am",
+          "name": "Dr. Emily Larson",
+          "image": "/static/media/doc2.d612cdc7482903476b8f.png",
+          "speciality": "Gynecologist",
+          "fees": 60,
+          "address": {
+            "line1": "27th Cross, Richmond",
+            "line2": "Circle, Ring Road, London"
+          }
+        },
+        {
+          "docId": "doc14",
+          "date": "Fri Jan 17 2025",
+          "time": "11:49 am",
+          "name": "Dr. Ryan Martinez",
+          "image": "/static/media/doc14.d79887ac3d9280f39558.png",
+          "speciality": "Gynecologist",
+          "fees": 60,
+          "address": {
+            "line1": "27th Cross, Richmond",
+            "line2": "Circle, Ring Road, London"
+          }
+        }
+      ],
+      "id": "0a0f"
     },
     {
       "id": "1770",
       "email": "",
       "name": "",
       "password": ""
+    },
+    {
+      "id": "d35c",
+      "email": "alex@gmail.com",
+      "name": "alex",
+      "password": "12345678"
     }
   ]
 }

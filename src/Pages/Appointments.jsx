@@ -3,8 +3,9 @@ import { useContext } from "react";
 import { AppContext } from "../Context/AppContext";
 import { useNavigate, useParams } from "react-router-dom";
 import { assets } from "../assets/assets";
-
-const Appointments = () => {
+import { UserContext } from "../Context/UserContext";
+const Appointments = ({ isUser }) => {
+  const { userInfo, setUserInfo } = useContext(UserContext);
   const { docId } = useParams();
   const navigate = useNavigate();
   const { doctors } = useContext(AppContext);
@@ -14,11 +15,14 @@ const Appointments = () => {
   const [slotTime, setSlotTime] = useState("");
   const daysOfTheweek = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
   const [sameSpeciality, setSameSpecialty] = useState([]);
-
+  const [time, setTime] = useState("");
+  const [date, setDate] = useState("");
+  const [appointments, setAppointments] = useState([userInfo.appointments]);
   const fetchDocInfo = async () => {
     const docInfo = doctors.find((doc) => doc._id === docId);
     setDocInfo(docInfo);
   };
+
   const getAvailableSlot = async () => {
     setDocSlot([]);
     const today = new Date();
@@ -55,6 +59,30 @@ const Appointments = () => {
       setDocSlot((prev) => [...prev, timeSlots]);
     }
   };
+  const bookAppointment = async () => {
+    const newBook = {
+      docId: docId,
+      date: date,
+      time: time,
+      name: docInfo.name,
+      image: docInfo.image,
+      speciality: docInfo.speciality,
+      fees: docInfo.fees,
+      address: docInfo.address,
+    };
+    const responseUser = await fetch(`http://localhost:3001/Users/${userInfo.id}`)
+   setUserInfo(await responseUser.json())
+
+    setAppointments([ ...userInfo.appointments,newBook]);
+    const response = await fetch(`http://localhost:3001/Users/${userInfo.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify( {
+        appointments: appointments}),
+    });
+    console.log(response);
+    
+  };
   const fliteredSpec = () => {
     let same = doctors.filter(
       (doc) => doc.speciality === docInfo.speciality && doc._id !== docId
@@ -72,6 +100,9 @@ const Appointments = () => {
   useEffect(() => {
     getAvailableSlot();
   }, [docInfo]);
+  useEffect(() => {
+    console.log(appointments);
+  }, [appointments]);
 
   return (
     docInfo && (
@@ -111,7 +142,7 @@ const Appointments = () => {
 
           <div className="flex gap-3 w-full mt-4 overflow-x-scroll">
             {docSlot.length &&
-              docSlot.slice(1,7).map((item, index) => {
+              docSlot.slice(1, 7).map((item, index) => {
                 return (
                   <div
                     key={index}
@@ -120,7 +151,10 @@ const Appointments = () => {
                         ? "bg-blue-500 text-white"
                         : " border border-gray-300"
                     }`}
-                    onClick={() => setSlotIndex(index)}
+                    onClick={() => {
+                      setSlotIndex(index);
+                      setDate(item[0].dateTime.toDateString());
+                    }}
                   >
                     <p>{item[0] && daysOfTheweek[item[0].dateTime.getDay()]}</p>
                     <p>{item[0] && item[0].dateTime.getDate()}</p>
@@ -140,14 +174,20 @@ const Appointments = () => {
                         : "text-gray-700 border border-gray-300"
                     } px-5 py-2 rounded-full`}
                     key={index}
-                    onClick={() => setSlotTime(item.time)}
+                    onClick={() => {
+                      setSlotTime(item.time);
+                      setTime(item.time.toLowerCase());
+                    }}
                   >
                     {item.time.toLowerCase()}
                   </p>
                 );
               })}
           </div>
-          <button className="bg-blue-600 text-white py-3 px-14 my-5 rounded-full flex items-center text-center font-light text-sm ">
+          <button
+            onClick={bookAppointment}
+            className="bg-blue-600 text-white py-3 px-14 my-5 rounded-full flex items-center text-center font-light text-sm "
+          >
             Book an appointment{" "}
           </button>
         </div>
