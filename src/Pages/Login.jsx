@@ -2,83 +2,91 @@ import React, { useState, useEffect, useContext } from "react";
 import { UserContext } from "../Context/UserContext";
 import { useNavigate } from "react-router-dom";
 import PopUp from "../Components/PopUp";
-const Login = ({  setIsUser }) => {
-  const { setUserInfo, userInfo } = useContext(UserContext);
+
+// Utility function for API requests
+const fetchData = async (url, options = {}) => {
+  const response = await fetch(url, options);
+  if (!response.ok) throw new Error("Network error");
+  return response.json();
+};
+
+const Login = ({ setIsUser }) => {
+  const { setUserInfo } = useContext(UserContext);
+  const [formState, setFormState] = useState({ email: "", name: "", password: "" });
   const [state, setState] = useState("login");
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState("notification");
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    if (email) {
-      fetch(`http://localhost:3001/Users?email=${email}`)
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.length > 0) {
-            setIsUser(true);
-          }
-        })
-        .catch((error) => console.error("Error fetching user data:", error));
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormState((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const validateForm = () => {
+    const { email, name, password } = formState;
+    if (!email || !password || (state === "signup" && !name)) {
+      setMessage("Please fill in all required fields.");
+      setIsOpen(true);
+      return false;
     }
-  }, [email, setIsUser]);
+    if (password.length < 8) {
+      setMessage("Password must be at least 8 characters.");
+      setIsOpen(true);
+      return false;
+    }
+    return true;
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
 
-    if (email === "" || password === "") {
-      setIsOpen(true);
-      setMessage("Please fill in all fields");
-    } else {
-      const newUser = { email, name, password };
+    if (!validateForm()) {
+      setLoading(false);
+      return;
+    }
+
+    const { email, name, password } = formState;
+
+    try {
       if (state === "signup") {
-        try {
-          const response = await fetch("http://localhost:3001/Users", {
+        const existingUsers = await fetchData(`http://localhost:3001/Users?email=${email}`);
+        if (existingUsers.length > 0) {
+          setMessage("Email already in use.");
+          setIsOpen(true);
+        } else {
+          const newUser = { email, name, password };
+          await fetchData("http://localhost:3001/Users", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(newUser),
           });
-          if (response.ok) {
-            setIsOpen(true);
-            setMessage("Account created successfully!");
-            setUserInfo(newUser);
-            navigate(`/my-profile/${newUser.id}`);
-          } else {
-            setIsOpen(true);
-            setMessage("Error creating account.");
-          }
-        } catch (error) {
-          console.error("Error during signup:", error);
+          setMessage("Account created successfully!");
+          setIsUser(true);
+          setUserInfo(newUser);
+          navigate(`/my-profile/${newUser.id}`);
         }
       } else if (state === "login") {
-        try {
-          const response = await fetch(
-            `http://localhost:3001/Users?email=${email}`
-          );
-          const data = await response.json();
-          if (data.length > 0 && data[0].password === password) {
-            setIsOpen(true);
-            setMessage("Login successful!");
-            setUserInfo(data[0]);
-            console.log(userInfo);
-
-            navigate(`/my-profile/${data[0].id}`);
-          } else {
-            setIsOpen(true);
-            setMessage("Invalid email or password.");
-          }
-        } catch (error) {
-          console.error("Error during login:", error);
+        const users = await fetchData(`http://localhost:3001/Users?email=${email}`);
+        if (users.length > 0 && users[0].password === password) {
+          setMessage("Login successful!");
+          setUserInfo(users[0]);
+          setIsUser(true);
+          navigate(`/my-profile/${users[0].id}`);
+        } else {
+          setMessage("Invalid email or password.");
         }
-        setIsUser(true);
       }
+    } catch (error) {
+      console.error("Error:", error);
+      setMessage("Something went wrong. Please try again.");
+    } finally {
+      setIsOpen(true);
+      setLoading(false);
     }
-    setLoading(false);
-  }; 
+  };
 
   return (
     <div className="flex items-center justify-center">
@@ -89,8 +97,7 @@ const Login = ({  setIsUser }) => {
         </b>
 
         <p className="text-gray-600 text-sm mb-4">
-          Please {state === "signup" ? "create an account" : "log in"} to
-          continue.
+          Please {state === "signup" ? "create an account" : "log in"} to continue.
         </p>
 
         {state === "signup" && (
@@ -98,8 +105,9 @@ const Login = ({  setIsUser }) => {
             <p className="text-gray-600 text-sm mb-2">Full Name</p>
             <input
               type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              name="name"
+              value={formState.name}
+              onChange={handleChange}
               className="border p-2 h-10 mb-4 w-full rounded-md border-gray-300"
               required
             />
@@ -109,8 +117,9 @@ const Login = ({  setIsUser }) => {
         <p className="text-gray-600 text-sm mb-2">Email</p>
         <input
           type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          name="email"
+          value={formState.email}
+          onChange={handleChange}
           className="border h-10 p-2 mb-4 w-full rounded-md border-gray-300"
           required
         />
@@ -118,35 +127,35 @@ const Login = ({  setIsUser }) => {
         <p className="text-gray-600 text-sm mb-2">Password</p>
         <input
           type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          name="password"
+          value={formState.password}
+          onChange={handleChange}
           className="border p-2 h-10 mb-2 w-full rounded-md border-gray-300"
           required
         />
-        {password.length < 8 ? (
-          <span className="text-red-500 mb-2 text-xs">
-            The password must be at least 8 characters
-          </span>
-        ) : (
-          <span className="text-green-500 mb-2 text-xs">
-            The password is allowed
+        {formState.password && (
+          <span
+            className={`mb-2 text-xs ${
+              formState.password.length >= 8 ? "text-green-500" : "text-red-500"
+            }`}
+          >
+            {formState.password.length >= 8
+              ? "Password is valid"
+              : "Password must be at least 8 characters"}
           </span>
         )}
+
         <button
           className="bg-blue-500 text-white py-2 rounded-md w-full mb-2"
           onClick={handleSubmit}
           disabled={loading}
         >
-          {loading
-            ? "Processing..."
-            : state === "signup"
-            ? "Create Account"
-            : "Login"}
+          {loading ? "Processing..." : state === "signup" ? "Create Account" : "Login"}
         </button>
 
         {state === "signup" ? (
           <p className="text-sm">
-            Already have an account?
+            Already have an account?{" "}
             <span
               className="text-blue-500 ml-2 underline cursor-pointer"
               onClick={() => setState("login")}
@@ -156,7 +165,7 @@ const Login = ({  setIsUser }) => {
           </p>
         ) : (
           <p className="text-sm">
-            Create a new account?
+            Create a new account?{" "}
             <span
               className="text-blue-500 ml-2 underline cursor-pointer"
               onClick={() => setState("signup")}

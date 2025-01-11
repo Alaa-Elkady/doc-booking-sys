@@ -1,15 +1,16 @@
 import React, { useContext, useState } from "react";
 import { AppContext } from "./../Context/AppContext";
+import { UserContext } from './../Context/UserContext';
 
 const MyAppointments = () => {
-  const { doctors } = useContext(AppContext);
   const [isCancel, setIsCancel] = useState(false);
+  const { userInfo } = useContext(UserContext);
   return (
     <div>
       <div className="text-gray-600 font-semibold my-10 text-lg">
         My Appointments
       </div>
-      {doctors.slice(0, 3).map((doctor, index) => (
+      {userInfo.appointments.map((doctor, index) => (
         <div
           key={index}
           className="flex flex-col md:flex-row  items-center justify-between w-full border-b border-gray-200"
@@ -30,7 +31,7 @@ const MyAppointments = () => {
               </div>
               <div className="flex flex-row">
                 <div className="font-semibold mr-1">Date & Time:</div>
-                <div> 26 undefined 2024 | 07:00 PM</div>
+                <div> {doctor.date}  || {doctor.time}</div>
               </div>
             </div>
           </div>
