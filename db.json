@@ -9,14 +9,14 @@
     {
       "name": "alaaelkady",
       "email": "alaaselkady@outlook.com",
-      "phone": "+20 127 7385 872",
+      "phone": "+20 000 0000 000",
       "address": {
         "line1": "37th Cross, Richmond",
         "line2": "Circle, Ring Road, London"
       },
       "password": "12345678",
-      "gender": "female",
-      "dob": "2025-01-31",
+      "gender": "male",
+      "dob": "2002-09-30",
       "id": "a45e",
       "appointments": [
         {
@@ -67,6 +67,57 @@
           "fees": 30,
           "address": {
             "line1": "37th Cross, Richmond",
+            "line2": "Circle, Ring Road, London"
+          }
+        },
+        {
+          "docId": "doc2",
+          "date": "Thu Jan 16 2025",
+          "time": "11:00 AM",
+          "_id": "doc2",
+          "name": "Dr. Emily Larson",
+          "image": "/static/media/doc2.d612cdc7482903476b8f.png",
+          "speciality": "Gynecologist",
+          "degree": "MBBS",
+          "experience": "3 Years",
+          "about": "Dr. Davis has a strong commitment to delivering comprehensive medical care, focusing on preventive medicine, early diagnosis, and effective treatment strategies. Dr. Davis has a strong commitment to delivering comprehensive medical care, focusing on preventive medicine, early diagnosis, and effective treatment strategies.",
+          "fees": 60,
+          "address": {
+            "line1": "27th Cross, Richmond",
+            "line2": "Circle, Ring Road, London"
+          }
+        },
+        {
+          "docId": "doc6",
+          "date": "Wed Jan 15 2025",
+          "time": "11:00 AM",
+          "_id": "doc6",
+          "name": "Dr. Andrew Williams",
+          "image": "/static/media/doc6.ae971d32474d2aefac8f.png",
+          "speciality": "Neurologist",
+          "degree": "MBBS",
+          "experience": "4 Years",
+          "about": "Dr. Davis has a strong commitment to delivering comprehensive medical care, focusing on preventive medicine, early diagnosis, and effective treatment strategies. Dr. Davis has a strong commitment to delivering comprehensive medical care, focusing on preventive medicine, early diagnosis, and effective treatment strategies.",
+          "fees": 50,
+          "address": {
+            "line1": "57th Cross, Richmond",
+            "line2": "Circle, Ring Road, London"
+          }
+        },
+        {
+          "docId": "doc2",
+          "date": "Wed Jan 15 2025",
+          "time": "10:30 AM",
+          "_id": "doc2",
+          "name": "Dr. Emily Larson",
+          "image": "/static/media/doc2.d612cdc7482903476b8f.png",
+          "speciality": "Gynecologist",
+          "degree": "MBBS",
+          "experience": "3 Years",
+          "about": "Dr. Davis has a strong commitment to delivering comprehensive medical care, focusing on preventive medicine, early diagnosis, and effective treatment strategies. Dr. Davis has a strong commitment to delivering comprehensive medical care, focusing on preventive medicine, early diagnosis, and effective treatment strategies.",
+          "fees": 60,
+          "address": {
+            "line1": "27th Cross, Richmond",
             "line2": "Circle, Ring Road, London"
           }
         }

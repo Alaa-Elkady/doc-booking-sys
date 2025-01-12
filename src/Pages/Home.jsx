@@ -4,12 +4,12 @@ import SpecialityMenu from "../Components/SpecialityMenu";
 import TopDoctors from "../Components/TopDoctors";
 import Banner from "../Components/Banner";
 
-const Home = () => {
+const Home = ({ isUser}) => {
   return (
     <div>
-      <Header />
+      <Header isUser={isUser} />
       <SpecialityMenu />
-      <TopDoctors />
+      <TopDoctors isUser={isUser} />
       <Banner />
     </div>
   );

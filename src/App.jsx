@@ -17,11 +17,11 @@ function App() {
     <div className="mx-4 sm:mx-[10%]">
       <NavBar isUser={isUser} setIsUser={setIsUser} />
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home isUser={isUser} />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login isUser={isUser} setIsUser={setIsUser} />} />
-        <Route path="/doctors" element={<Doctors />} />
+        <Route path="/doctors" element={<Doctors isUser={isUser} />} />
         <Route path="/doctors/:speciality" element={<Doctors />} />
         <Route path="/my-profile/:id" element={<MyProfile />} />
         <Route path="/my-appointments" element={<MyAppointments isUser={isUser} />} />

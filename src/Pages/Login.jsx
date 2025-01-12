@@ -13,7 +13,7 @@ const fetchData = async (url, options = {}) => {
 const Login = ({ setIsUser }) => {
   const { setUserInfo } = useContext(UserContext);
   const [formState, setFormState] = useState({ email: "", name: "", password: "" });
-  const [state, setState] = useState("login");
+  const [state, setState] = useState("signup");
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState("notification");
@@ -65,6 +65,7 @@ const Login = ({ setIsUser }) => {
           });
           setMessage("Account created successfully!");
           setIsUser(true);
+          setIsOpen(true);
           setUserInfo(newUser);
           navigate(`/my-profile/${newUser.id}`);
         }
@@ -72,18 +73,21 @@ const Login = ({ setIsUser }) => {
         const users = await fetchData(`http://localhost:3001/Users?email=${email}`);
         if (users.length > 0 && users[0].password === password) {
           setMessage("Login successful!");
+          setIsOpen(true);
           setUserInfo(users[0]);
           setIsUser(true);
           navigate(`/my-profile/${users[0].id}`);
         } else {
           setMessage("Invalid email or password.");
+          setIsOpen(true);
         }
       }
     } catch (error) {
       console.error("Error:", error);
+      setIsOpen(true);
       setMessage("Something went wrong. Please try again.");
     } finally {
-      setIsOpen(true);
+ 
       setLoading(false);
     }
   };

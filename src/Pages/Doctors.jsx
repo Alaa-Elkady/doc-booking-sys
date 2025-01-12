@@ -1,12 +1,15 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AppContext } from "../Context/AppContext";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import PopUp from "../Components/PopUp";
 
-const Doctors = () => {
+const Doctors = ({ isUser }) => {
   const { doctors } = useContext(AppContext);
   const { speciality } = useParams();
   const [fliterDocs, setFliterDocs] = useState([]);
   const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
+  const [message, setMessage] = useState("notification");
   const filter = () => {
     if (speciality) {
       setFliterDocs(doctors.filter((doc) => doc.speciality === speciality));
@@ -19,11 +22,14 @@ const Doctors = () => {
   }, [doctors, speciality]);
   return (
     <div>
+      <PopUp setIsOpen={setIsOpen} message={message} isOpen={isOpen} />
       <div className="my-3 text-gray-600 text-md">
         Browse through the doctors specialist.
       </div>
       <div className="flex md:items-start  md:flex-row flex-col gap-3 ">
-        <h1 className="md:hidden text-sm  capitalize font-semibold">filter by speciality</h1>
+        <h1 className="md:hidden text-sm  capitalize font-semibold">
+          filter by speciality
+        </h1>
         <ul className="flex md:flex-col flex-wrap flex-row justify-center">
           <li
             onClick={() =>
@@ -89,8 +95,15 @@ const Doctors = () => {
         <div className="w-full flex md:items-start justify-center flex-wrap gap-3 gap-y-4 px-3 my-3">
           {fliterDocs.map((doctor, index) => {
             return (
-              <Link
-                to={`/appointments/${doctor._id}`}
+              <div
+                onClick={() => {
+                  if (isUser === true) {
+                    navigate(`/appointments/${doctor._id}`);
+                  } else {
+                    setIsOpen(true);
+                    setMessage("Please login to book an appointment.");
+                  }
+                }}
                 key={index}
                 className="md:w-56 w-44  border border-blue-200 rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-500"
               >
@@ -105,7 +118,7 @@ const Doctors = () => {
                   </p>
                   <p className="text-gray-600 text-sm ">{doctor.speciality}</p>
                 </div>
-              </Link>
+              </div>
             );
           })}
         </div>

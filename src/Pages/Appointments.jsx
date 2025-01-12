@@ -3,13 +3,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import { AppContext } from "../Context/AppContext";
 import { UserContext } from "../Context/UserContext";
 import { assets } from "../assets/assets";
-
+import PopUp from "../Components/PopUp";
 const Appointments = () => {
   const { userInfo, setUserInfo } = useContext(UserContext);
   const { docId } = useParams();
   const navigate = useNavigate();
   const { doctors } = useContext(AppContext);
-
   const [docInfo, setDocInfo] = useState(null);
   const [docSlots, setDocSlots] = useState([]);
   const [slotIndex, setSlotIndex] = useState(0);
@@ -17,7 +16,8 @@ const Appointments = () => {
   const [date, setDate] = useState("");
   const [sameSpeciality, setSameSpeciality] = useState([]);
   const daysOfTheWeek = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
-
+  const [isOpen, setIsOpen] = useState(false);
+  const [message, setMessage] = useState("notification");
   // Fetch doctor information
   useEffect(() => {
     const doc = doctors.find((doctor) => doctor._id === docId);
@@ -56,7 +56,9 @@ const Appointments = () => {
         currentDay.setMinutes(currentDay.getMinutes() + 30);
       }
 
-      slots.push(daySlots);
+      if (daySlots.length > 0) {
+        slots.push(daySlots);
+      }
     }
 
     setDocSlots(slots);
@@ -75,42 +77,46 @@ const Appointments = () => {
   // Book an appointment
   const bookAppointment = async () => {
     if (!date || !slotTime) return alert("Please select a date and time slot!");
-  
+
     const newAppointment = {
       docId,
       date,
       time: slotTime,
       ...docInfo,
     };
-  
+
     try {
       const currentAppointments = userInfo.appointments || []; // Fallback if undefined
       const updatedUser = {
         ...userInfo,
         appointments: [...currentAppointments, newAppointment],
       };
-  
+
       // Update the user on the server
       const response = await fetch(`http://localhost:3001/Users/${userInfo.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updatedUser),
       });
-  
+
       if (!response.ok) throw new Error("Failed to update user");
-  
+
       setUserInfo(updatedUser); // Update local state
-      alert("Appointment booked successfully!");
+      setIsOpen(true);
+      setMessage("Appointment booked successfully!");
     } catch (error) {
       console.error("Error booking appointment:", error);
-      alert("Something went wrong. Please try again.");
+      setIsOpen(true);
+      setMessage("Something went wrong. Please try again.");
     }
   };
-  
 
   return (
     docInfo && (
       <div>
+        {/* popup */}
+        <PopUp isOpen={isOpen} setIsOpen={setIsOpen} message={message} setMessage={setMessage} />
+     
         {/* Doctor Details */}
         <div className="flex flex-col md:flex-row gap-4 py-10 w-full text-gray-500">
           <img
@@ -139,45 +145,54 @@ const Appointments = () => {
         {/* Booking Slots */}
         <div className="sm:ml-72 sm:pl-4 mt-4 font-medium text-gray-700">
           <p>Booking Slots</p>
-          <div className="flex gap-3 w-full mt-4 overflow-x-scroll">
-            {docSlots.map((slots, index) => (
-              <div
-                key={index}
-                className={`text-lg text-center rounded-full p-2 min-w-16 py-6 cursor-pointer ${
-                  slotIndex === index ? "bg-blue-500 text-white" : "border border-gray-300"
-                }`}
-                onClick={() => {
-                  setSlotIndex(index);
-                  setDate(slots[0].dateTime.toDateString());
-                }}
-              >
-                <p>{daysOfTheWeek[slots[0].dateTime.getDay()]}</p>
-                <p>{slots[0].dateTime.getDate()}</p>
+          {docSlots.length > 0 ? (
+            <>
+              <div className="flex gap-3 w-full mt-4 overflow-x-scroll">
+                {docSlots.map((slots, index) => {
+                  if (slots.length === 0) return null;
+                  return (
+                    <div
+                      key={index}
+                      className={`text-lg text-center rounded-full p-2 min-w-16 py-6 cursor-pointer ${
+                        slotIndex === index ? "bg-blue-500 text-white" : "border border-gray-300"
+                      }`}
+                      onClick={() => {
+                        setSlotIndex(index);
+                        setDate(slots[0].dateTime.toDateString());
+                      }}
+                    >
+                      <p>{daysOfTheWeek[slots[0].dateTime.getDay()]}</p>
+                      <p>{slots[0].dateTime.getDate()}</p>
+                    </div>
+                  );
+                })}
               </div>
-            ))}
-          </div>
 
-          <div className="flex gap-3 w-full mt-4 overflow-x-scroll items-center">
-            {docSlots[slotIndex]?.map((slot, index) => (
-              <p
-                key={index}
-                className={`text-sm font-light flex-shrink-0 cursor-pointer ${
-                  slot.time === slotTime
-                    ? "bg-blue-500 text-white"
-                    : "text-gray-700 border border-gray-300"
-                } px-5 py-2 rounded-full`}
-                onClick={() => setSlotTime(slot.time)}
+              <div className="flex gap-3 w-full mt-4 overflow-x-scroll items-center">
+                {docSlots[slotIndex]?.map((slot, index) => (
+                  <p
+                    key={index}
+                    className={`text-sm font-light flex-shrink-0 cursor-pointer ${
+                      slot.time === slotTime
+                        ? "bg-blue-500 text-white"
+                        : "text-gray-700 border border-gray-300"
+                    } px-5 py-2 rounded-full`}
+                    onClick={() => setSlotTime(slot.time)}
+                  >
+                    {slot.time}
+                  </p>
+                ))}
+              </div>
+              <button
+                onClick={bookAppointment}
+                className="bg-blue-600 text-white py-3 px-14 my-5 rounded-full flex items-center text-center font-light text-sm"
               >
-                {slot.time}
-              </p>
-            ))}
-          </div>
-          <button
-            onClick={bookAppointment}
-            className="bg-blue-600 text-white py-3 px-14 my-5 rounded-full flex items-center text-center font-light text-sm"
-          >
-            Book an Appointment
-          </button>
+                Book an Appointment
+              </button>
+            </>
+          ) : (
+            <p>No available slots at the moment. Please try again later.</p>
+          )}
         </div>
 
         {/* Related Doctors */}

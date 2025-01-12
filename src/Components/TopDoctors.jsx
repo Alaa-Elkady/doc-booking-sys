@@ -1,10 +1,15 @@
-import { React, useContext } from "react";
-import { Link } from "react-router-dom";
+import { React, useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { AppContext } from "../Context/AppContext";
-const TopDoctors = () => {
+import PopUp from "./PopUp";
+const TopDoctors = ({ isUser }) => {
   const { doctors } = useContext(AppContext);
+  const [isOpen, setIsOpen] = useState(false);
+  const [message, setMessage] = useState("notification");
+  const navigate = useNavigate();
   return (
     <div className="flex flex-col items-center justify-center text-gray-800 py-16 gap-4">
+      <PopUp setIsOpen={setIsOpen} message={message} isOpen={isOpen} />
       <div className="text-3xl font-medium ">Top Doctors to Book</div>
       <p className="text-center text-sm leading-tight sm:w-2/6">
         Simply browse through our extensive list of trusted doctors.
@@ -16,8 +21,15 @@ const TopDoctors = () => {
             doctor.experience === "3 Years"
           ) {
             return (
-              <Link
-                to={`/appointments/${doctor._id}`}
+              <div
+                onClick={() => {
+                  if (isUser === true) {
+                    navigate(`/appointments/${doctor._id}`);
+                  } else {
+                    setIsOpen(true);
+                    setMessage("Please login to book an appointment.");
+                  }
+                }}
                 key={index}
                 className=" border border-blue-200 rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-500"
               >
@@ -32,7 +44,7 @@ const TopDoctors = () => {
                   </p>
                   <p className="text-gray-600 text-sm ">{doctor.speciality}</p>
                 </div>
-              </Link>
+              </div>
             );
           }
         })}

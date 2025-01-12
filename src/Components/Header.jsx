@@ -1,7 +1,7 @@
 import React from "react";
 import { assets } from "../assets/assets";
 import { Link } from "react-router-dom";
-const Header = () => {
+const Header = ({isUser}) => {
   return (
     <div className="bg-blue-600 w-full rounded-lg my-5 flex md:px-10 px-6 md:flex-row flex-col ">
       {/* left side */}
@@ -18,13 +18,19 @@ const Header = () => {
             schedule your appointment hassle-free.
           </p>
         </div>
-        <Link
+      { !isUser? <Link
           to='/login'
           className="bg-white py-2 px-4 rounded-full flex items-center w-max hover:translate-x-5 transition-all duration-100 "
         >
-          Book appointment <img src={assets.arrow_icon}
+          Create Your Account <img src={assets.arrow_icon}
           className="pl-2" />
-        </Link>
+        </Link>:<Link
+          to='/doctors'
+          className="bg-white py-2 px-4 rounded-full flex items-center w-max hover:translate-x-5 transition-all duration-100 "
+        >
+          Book an appointment <img src={assets.arrow_icon}
+          className="pl-2" />
+        </Link>}
       </div>
       {/* right side  */}
       <div className="md:w-1/2 relative ">

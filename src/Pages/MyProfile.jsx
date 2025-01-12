@@ -3,8 +3,11 @@ import { useState, useContext } from "react";
 import { UserContext } from "./../Context/UserContext";
 import { useParams } from "react-router-dom";
 import { assets } from "../assets/assets";
+import PopUp from "../Components/PopUp";
 const MyProfile = () => {
   const { userInfo } = useContext(UserContext);
+  const [message, setMessage] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [userData, setUserData] = useState({
     name: userInfo.name,
     // image: assets.profile_pic,
@@ -29,9 +32,11 @@ const MyProfile = () => {
         if (response.ok) {
           const updatedUser = await response.json();
           setUserData(updatedUser); // Update context
-          alert("Profile updated successfully!");
+          setIsOpen(true);
+          setMessage("Profile updated successfully!");
         } else {
-          alert("Failed to update profile. Please try again.");
+          setIsOpen(true);
+          setMessage("Failed to update profile. Please try again.");
         }
       } catch (error) {
         console.error("Error updating profile:", error);
@@ -43,6 +48,7 @@ const MyProfile = () => {
   const [isEdit, setIsEdit] = useState(false);
   return (
     <div className="flex flex-col items-start md:w-1/3">
+      <PopUp isOpen={isOpen} setIsOpen={setIsOpen} message={message} />
       <img
         className="w-40 h-40 rounded-lg mt-12 mb-6"
         src={assets.profile_pic}
